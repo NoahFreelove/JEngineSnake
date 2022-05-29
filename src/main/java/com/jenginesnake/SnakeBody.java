@@ -7,11 +7,15 @@ import com.JEngine.Core.Position.Vector2;
 import com.JEngine.Core.Position.Vector3;
 import com.JEngine.Game.PlayersAndPawns.Player;
 
+/**
+ *  SnakeBody - The SnakeBody class simply follows its parent's previous position.
+ */
 public class SnakeBody extends Player {
     private int x,y;
     private int prevX,prevY;
 
-    public SnakeBody parentNode;
+    public SnakeBody parentNode; // The node this SnakeBody will follow
+
     public SnakeBody(int x, int y, GameImage sprite) {
         super(Transform.exSimpleTransform(new Vector2(PlayScene.snakeSize *x, PlayScene.snakeSize *y)), sprite, new Identity("snake"));
         this.x = x;
@@ -26,6 +30,26 @@ public class SnakeBody extends Player {
         prevX = x;
         prevY = y;
         this.parentNode = parentNode;
+    }
+
+    // Update position on screen
+    @Override
+    public void Update(){
+        setPosition(new Vector3(PlayScene.snakeSize *x, PlayScene.snakeSize *y));
+    }
+
+    @Override
+    public String toString(){
+        return String.format("Snake @%d,%d (%s)",getX(),getY(), getClass().getSimpleName());
+    }
+
+    // Getters and Setters:
+    public int getPrevX() {
+        return prevX;
+    }
+
+    public int getPrevY() {
+        return prevY;
     }
 
     public void setParentNode(SnakeBody parentNode){
@@ -52,22 +76,5 @@ public class SnakeBody extends Player {
 
     public SnakeBody getParentNode() {
         return parentNode;
-    }
-
-    @Override
-    public void Update(){
-        setPosition(new Vector3(PlayScene.snakeSize *x, PlayScene.snakeSize *y));
-    }
-    @Override
-    public String toString(){
-        return String.format("Snake @%d,%d (%s)",getX(),getY(), getClass().getSimpleName());
-    }
-
-    public int getPrevX() {
-        return prevX;
-    }
-
-    public int getPrevY() {
-        return prevY;
     }
 }

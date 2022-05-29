@@ -5,10 +5,12 @@ import com.JEngine.Core.Identity;
 import com.JEngine.Core.Position.Transform;
 import com.JEngine.Core.Position.Vector2;
 import com.JEngine.Game.PlayersAndPawns.Sprite;
-import com.JEngine.Utility.ImageProcessing.GenerateSolidTexture;
 
+/**
+ * Apple is a simple object that can't move and feed's the snake
+ */
 public class Apple extends Sprite {
-    private int x,y;
+    private final int x,y;
     public Apple(int x, int y) {
         super(Transform.exSimpleTransform(new Vector2(PlayScene.snakeSize*x, PlayScene.snakeSize*y)), new GameImage("bin/apple.png"), new Identity("apple"));
         this.x = x;

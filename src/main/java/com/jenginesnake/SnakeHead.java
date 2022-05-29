@@ -3,13 +3,18 @@ package com.jenginesnake;
 import com.JEngine.Core.GameImage;
 import com.JEngine.Core.Position.SimpleDirection;
 import com.JEngine.Core.Position.Vector3;
-import com.JEngine.Utility.ImageProcessing.GenerateSolidTexture;
+import com.JEngine.Game.Visual.Scenes.SceneManager;
 import javafx.scene.input.KeyCode;
 
+
+/**
+ * SnakeHead - The main controller of the snake. It is guided by the player and doesn't follow a parent node
+ */
 public class SnakeHead extends SnakeBody {
     private boolean hasEaten;
-    private SimpleDirection dir =  SimpleDirection.RIGHT;
-    private SimpleDirection prevDir = SimpleDirection.RIGHT;
+    private SimpleDirection dir =  SimpleDirection.UP;
+    private SimpleDirection prevDir = dir;
+
     public SnakeHead(int x, int y) {
         super(x, y, new GameImage("bin/snakeHead.png"));
         setParentNode(this);
@@ -19,28 +24,29 @@ public class SnakeHead extends SnakeBody {
         hasEaten = true;
         PlayScene.score++;
     }
+
+    // add a new SnakeBody node at the previous position of the last part of the snake
     public void addChild()
     {
         hasEaten = false;
+        // get last snake node and create a child at it's previous position
         SnakeBody lastNode = PlayScene.children.get(PlayScene.children.size()-1);
 
-        /*System.out.println(lastNode);
-        System.out.println(PlayScene.children.indexOf(lastNode));*/
-
         SnakeBody newChild = new SnakeBody(lastNode.getPrevX(), lastNode.getPrevY(), new GameImage("bin/snakeBody.png"), lastNode);
+
         PlayScene.children.add(newChild);
-        if(PlayScene.children.size() == PlayScene.width*PlayScene.height)
-        {
-            System.out.println("Win!");
-        }
         Main.gameScene.add(newChild);
     }
 
+    // Called every game tick, moves all the snake parts to their parent's previous position.
+    // The parent node will move in the direction its facing.
     public void moveAllChildren(){
         if(PlayScene.isPaused)
             return;
 
         moveSelf();
+
+        // Foreach snake-body in the arraylist, move
         for (Object obj: PlayScene.children.toArray()){
             if(obj == null)
                 continue;
@@ -52,22 +58,14 @@ public class SnakeHead extends SnakeBody {
                 body.setY(body.getParentNode().getPrevY());
             }
         }
-
-
-        /*for (Object obj: PlayScene.children.toArray()) {
-            if (obj == null)
-                continue;
-            if (obj instanceof SnakeBody body) {
-                System.out.println(body);
-            }
-        }
-
-        System.out.println("\n\n\n");*/
+        // if the snake has eaten since the last game tick, add a new child
         if(hasEaten)
         {
             addChild();
         }
     }
+
+    // move in the direction the snake is facing
     private void moveSelf(){
         int deltaX = 0, deltaY = 0;
         switch (dir)
@@ -83,7 +81,7 @@ public class SnakeHead extends SnakeBody {
         prevDir = dir;
 
 
-        // if hit own body
+        // if hit own body, lose the game
         for (Object obj: PlayScene.children.toArray()){
             if(obj == null)
                 continue;
@@ -97,12 +95,14 @@ public class SnakeHead extends SnakeBody {
                 }
             }
         }
-        // if hit outer border
+
+        // if hit outer border, lose the game
         if(getX() < 0 || getX() >= PlayScene.width || getY() < 0 || getY() >= PlayScene.height)
         {
             Main.gameScene.endGame();
         }
-        // if ate apple
+
+        // if ate apple, set hasEaten and destroy the apple
         if(PlayScene.activeApple.getX() == getX() && PlayScene.activeApple.getY() == getY())
         {
             PlayScene.activeApple.eat();
@@ -111,6 +111,7 @@ public class SnakeHead extends SnakeBody {
         }
     }
 
+    // Logic for turning the snake
     @Override
     public void onKeyPressed(KeyCode keyCode){
         switch (keyCode)
@@ -140,16 +141,26 @@ public class SnakeHead extends SnakeBody {
                 }
             }
         }
-    }
-    @Override
-    public void Update(){
-        super.Update();
+
+        // Change rotation of head sprite to face the new direction
         switch (dir)
         {
             case UP -> setRotation(new Vector3(0,0,0));
             case DOWN -> setRotation(new Vector3(180,0,0));
             case LEFT -> setRotation(new Vector3(270,0,0));
             case RIGHT -> setRotation(new Vector3(90,0,0));
+        }
+    }
+    //
+    @Override
+    public void Update(){
+        // call super function so the snake's position is updated
+        super.Update();
+
+        // if the player manages to fill the grid, let them win.
+        if(PlayScene.score == PlayScene.width*PlayScene.height)
+        {
+            SceneManager.switchScene(new MainMenu());
         }
     }
 }

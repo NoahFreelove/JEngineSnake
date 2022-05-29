@@ -5,6 +5,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 public class MainMenu extends GameScene {
+
+    // Using: SceneManager.switchScene(new MainMenu());
+    // will create a simple main menu which prompts user to start
     public MainMenu() {
         super("Main Menu");
         Text titleText = new Text("Snake");
