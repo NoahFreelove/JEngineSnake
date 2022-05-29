@@ -16,6 +16,8 @@ public class Main extends Application {
         window = new GameWindow(gameScene, 1f, "Snake", stage);
         new GameCamera(Vector3.emptyVector(), window, gameScene, new Identity("Camera"));
         window.setBackgroundColor(Color.web("#009A17"));
+        stage.setWidth(PlayScene.width*PlayScene.snakeSize);
+        stage.setHeight(PlayScene.height*PlayScene.snakeSize);
     }
 
     public static void main(String[] args) {
