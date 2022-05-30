@@ -76,12 +76,12 @@ public class PlayScene extends GameScene {
 
     // Pause game and Show game over text when the snake dies
     public void endGame(){
-        Text gameOverText = new Text("Game Over!\nLength: " + score + "\nPress R to restart");
+        Text gameOverText = new Text("Game Over!\nLength: " + score + " squares\nPress R to restart");
         gameOverText.setTranslateX(width*snakeSize/2 - gameOverText.getLayoutBounds().getWidth()/2);
         gameOverText.setTranslateY(height*snakeSize/2 - gameOverText.getLayoutBounds().getHeight()/2);
         gameOverText.setFill(Color.WHITE);
-        gameOverText.setScaleX(3);
-        gameOverText.setScaleY(3);
+        gameOverText.setScaleX(2);
+        gameOverText.setScaleY(2);
         addUI(gameOverText);
         isPaused = true;
     }
